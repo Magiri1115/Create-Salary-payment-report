@@ -111,3 +111,15 @@ function loadGroupedData() {
 
   return JSON.parse(json);
 }
+
+function assertStatus(expected) {
+  const current = PropertiesService
+    .getScriptProperties()
+    .getProperty('status');
+
+  if (current !== expected) {
+    throw new Error(
+      `状態エラー: 期待=${expected}, 現在=${current}`
+    );
+  }
+}

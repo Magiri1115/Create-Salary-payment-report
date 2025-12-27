@@ -1,9 +1,23 @@
-//　関数を初期化
+// ==================================================
+// ===== 管理者・テスト用 =====
+// ==================================================
+
+// 状態を初期化（最初に一度だけ手動実行）
 function initStatus() {
   PropertiesService
     .getScriptProperties()
     .setProperty('status', 'CSV未読込');
 }
+// 完全リセット用
+function resetTestStatus() {
+  PropertiesService
+    .getScriptProperties()
+    .deleteAllProperties();
+}
+
+// ==================================================
+// ===== 業務フロー =====
+// ==================================================
 
 function runImportCsv() {
   assertStatus('CSV未読込');
@@ -39,6 +53,11 @@ function runExportPdf() {
   setStatus('完了');
 }
 
+
+// ==================================================
+// ===== 内部ユーティリティ =====
+// ==================================================
+
 function assertStatus(expected) {
   const current = PropertiesService
     .getScriptProperties()
@@ -55,4 +74,16 @@ function setStatus(status) {
   PropertiesService
     .getScriptProperties()
     .setProperty('status', status);
+}
+
+function getRawCsvRows() {
+  const sheet = SpreadsheetApp
+    .getActive()
+    .getSheetByName('RAW_CSV');
+
+  if (!sheet) {
+    throw new Error('RAW_CSV シートが存在しません');
+  }
+
+  return sheet.getDataRange().getValues();
 }

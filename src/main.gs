@@ -55,27 +55,12 @@ function runExportPdf() {
 
 
 // ==================================================
-// ===== 内部ユーティリティ =====
+// ===== 内部ユーティリティ：データ取得・保存 =====
 // ==================================================
 
-function assertStatus(expected) {
-  const current = PropertiesService
-    .getScriptProperties()
-    .getProperty('status');
-
-  if (current !== expected) {
-    throw new Error(
-      `状態エラー: 期待=${expected}, 現在=${current}`
-    );
-  }
-}
-
-function setStatus(status) {
-  PropertiesService
-    .getScriptProperties()
-    .setProperty('status', status);
-}
-
+/**
+ * RAW_CSV シートから CSV 行データを取得
+ */
 function getRawCsvRows() {
   const sheet = SpreadsheetApp
     .getActive()
@@ -85,5 +70,44 @@ function getRawCsvRows() {
     throw new Error('RAW_CSV シートが存在しません');
   }
 
-  return sheet.getDataRange().getValues();
+  const values = sheet.getDataRange().getValues();
+
+  if (values.length <= 1) {
+    throw new Error('RAW_CSV にデータがありません');
+  }
+
+  return values;
+}
+
+/**
+ * 市区町村ごとに振り分けたデータを保存
+ * @param {Object} grouped
+ */
+function saveGroupedData(grouped) {
+  if (!grouped || typeof grouped !== 'object') {
+    throw new Error('保存対象の groupedData が不正です');
+  }
+
+  PropertiesService
+    .getScriptProperties()
+    .setProperty(
+      'GROUPED_DATA',
+      JSON.stringify(grouped)
+    );
+}
+
+/**
+ * 保存済みの市区町村別データを読み込み
+ * @returns {Object}
+ */
+function loadGroupedData() {
+  const json = PropertiesService
+    .getScriptProperties()
+    .getProperty('GROUPED_DATA');
+
+  if (!json) {
+    throw new Error('GROUPED_DATA が未保存です');
+  }
+
+  return JSON.parse(json);
 }

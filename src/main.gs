@@ -123,3 +123,9 @@ function assertStatus(expected) {
     );
   }
 }
+
+function setStatus(status) {
+  PropertiesService
+    .getScriptProperties()
+    .setProperty('status', status);
+}

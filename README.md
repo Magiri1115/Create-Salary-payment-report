@@ -17,3 +17,10 @@ gas-payroll-report/
 ├─ .gitignore
 └─ README.md
 ```
+## テスト手順
+1. resetTesstStatus()
+2. initStatus()
+3. runImportCsv()
+4. runNormalizeAndDistribute()
+5. runGenerateDetails()
+6. runExportPdf()

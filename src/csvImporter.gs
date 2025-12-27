@@ -1,6 +1,6 @@
 const CsvImporter = {
-  import: function() {},
+  import: function() {
+    this.parseCsv_();
+  },
   parseCsv_: function(file) {}
 }
-
-parseCsv_()

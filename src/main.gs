@@ -1,3 +1,10 @@
+//　関数を初期化
+function initStatus() {
+  PropertiesService
+    .getScriptProperties()
+    .setProperty('status', 'CSV未読込');
+}
+
 function runImportCsv() {
   assertStatus('CSV未読込');
   CsvImporter.import();
@@ -30,4 +37,22 @@ function runExportPdf() {
   assertStatus('帳票生成済');
   PdfExporter.exportAll();
   setStatus('完了');
+}
+
+function assertStatus(expected) {
+  const current = PropertiesService
+    .getScriptProperties()
+    .getProperty('status');
+
+  if (current !== expected) {
+    throw new Error(
+      `状態エラー: 期待=${expected}, 現在=${current}`
+    );
+  }
+}
+
+function setStatus(status) {
+  PropertiesService
+    .getScriptProperties()
+    .setProperty('status', status);
 }
